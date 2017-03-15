@@ -14,16 +14,33 @@ class ViewController: UIViewController {
     @IBOutlet weak var visorDeTexto: UITextView!
     var ISBN : String = ""
     
-    func buscar(terminación : String) -> String {
+    func buscar(terminación : String){
         
         let terminaciónBusqueda : String = terminación
         let urls = "http://openlibrary.org/api/books?jscmd=data&format=json&bibkeys=ISBN:\(terminaciónBusqueda)"
         let url = NSURL(string : urls)
         let datos : NSData? = NSData(contentsOf : url! as URL)
         
-        let texto = NSString(data : datos! as Data, encoding : String.Encoding.utf8.rawValue)
+        if (datos != nil){
+            //Pasar los datos obtenidos en UTF8 a String
+            let texto = NSString(data: datos! as Data, encoding: String.Encoding.utf8.rawValue)
+            //Mostrar datos por pantalla
+            print(texto!)
+            //Mostrar datos en textView
+            visorDeTexto.textColor = UIColor.black
+            visorDeTexto.text = texto as String!
+        }else{ //Si no hay datos (fallo en la conexión a Internet)
+            //Mostrar mensaje de error
+            let alerta = UIAlertController(title: "Error", message: "Error en la conección a internet", preferredStyle: .alert)
+            
+            let cancelar = UIAlertAction(title: "Cancelar", style: .cancel)
+            
+            alerta.addAction(cancelar)
+            
+            present(alerta, animated: true)
         
-        return texto as! String
+        }
+
     }
 
     override func viewDidLoad() {
@@ -39,7 +56,7 @@ class ViewController: UIViewController {
     
     @IBAction func buscarButton(_ sender: Any) {
         
-        visorDeTexto.text = String(buscar(terminación: textodeBusqueda.text!))
+        buscar(terminación: textodeBusqueda.text!)
         
         
     }
