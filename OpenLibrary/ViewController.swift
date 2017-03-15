@@ -9,6 +9,22 @@
 import UIKit
 
 class ViewController: UIViewController {
+    
+    @IBOutlet weak var textodeBusqueda: UITextField!
+    @IBOutlet weak var visorDeTexto: UITextView!
+    var ISBN : String = ""
+    
+    func buscar(terminación : String) -> String {
+        
+        let terminaciónBusqueda : String = terminación
+        let urls = "http://openlibrary.org/api/books?jscmd=data&format=json&bibkeys=ISBN:\(terminaciónBusqueda)"
+        let url = NSURL(string : urls)
+        let datos : NSData? = NSData(contentsOf : url! as URL)
+        
+        let texto = NSString(data : datos! as Data, encoding : String.Encoding.utf8.rawValue)
+        
+        return texto as! String
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,6 +35,15 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+   
+    
+    @IBAction func buscarButton(_ sender: Any) {
+        
+        visorDeTexto.text = String(buscar(terminación: textodeBusqueda.text!))
+        
+        
+    }
+    
 
 
 }
